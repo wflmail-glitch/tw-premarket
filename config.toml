@@ -1,0 +1,24 @@
+# 台股盤前整理 設定檔
+# 要換觀察清單，改這裡就好（不用動程式）
+
+[watchlist]
+# ETF 觀察清單
+etfs = ["0050", "0056", "00878", "00919", "00981A"]
+# 個股觀察清單（持股）
+stocks = ["2330", "1563", "2501"]
+
+[market]
+foreign_top_n = 10        # 外資買超／賣超前 N 名
+sector_top_n = 3          # 類股漲跌前 N 名
+request_gap_seconds = 5   # 證交所請求間隔（太密會被擋）
+retry_wait_seconds = [20, 45, 90]
+
+[news]
+min_items = 5
+max_items = 8
+lookback_hours = 20
+sources = ["yahoo", "udn", "cnyes"]
+
+[notify]
+# telegram 或 line；憑證放環境變數或 .secrets.env（不要寫在這）
+channel = "telegram"
