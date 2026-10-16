@@ -13,7 +13,8 @@ import re
 import sys
 
 from build_report import parse_ai
-from common import ROOT, today_tpe
+from common import ROOT, load_config, today_tpe
+from holdings import compute as compute_holdings
 
 # 注意：不能用 \w 當邊界——中文字在 Python 也算 \w，會漏抓「重挫2202.18點」這種數字
 NUM_RE = re.compile(r"(?<![0-9A-Za-z.])[-+−]?\d[\d,]*(?:\.\d+)?")
@@ -75,6 +76,7 @@ def main():
     if m["status"] != "ok":
         print("非交易資料日，略過核對"); return
     facts = walk(m, set())
+    facts = walk(compute_holdings(load_config(), m), facts)  # 持股損益（由程式從收盤價計算）
     facts |= {str(today.year), str(today.year - 1911)}
     news = set()
     sel = dd / "news_selected.json"

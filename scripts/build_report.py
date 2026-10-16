@@ -8,7 +8,8 @@ import datetime as dt
 import json
 import re
 
-from common import ROOT, load_config, today_tpe
+from common import ROOT, load_config, today_tpe, watch_codes
+from holdings import compute as compute_holdings
 
 WD = "一二三四五六日"
 EXCLUDE_SECTORS = {"電子工業", "電子"}
@@ -68,10 +69,23 @@ def render_market(m, cfg):
     L.append("最強：" + "、".join(f"{s['name']} {s['pct']:+.2f}%" for s in top))
     L.append("最弱：" + "、".join(f"{s['name']} {s['pct']:+.2f}%" for s in bot))
 
+    t86w = m.get("t86", {}).get("watch", {})
+    if cfg.get("holdings"):
+        h = compute_holdings(cfg, m)
+        L.append("")
+        L.append("【我的持股】（收盤價計，已扣預估賣出手續費＋交易稅）")
+        L.append(f"總市值 {h['total_value']:,.0f}｜預估損益 {h['total_pnl']:+,.0f}（{h['total_ret']:+.2f}%）｜當日 {h['day_pnl']:+,.0f}")
+        for r in h["rows"]:
+            if r.get("missing"):
+                L.append(f"{r['code']} {r['name']} 無資料"); continue
+            f = t86w.get(r["code"], {})
+            fi = f"｜外資 {lots(f['foreign'])}" if f else ""
+            L.append(f"{r['name']} {r['close']:,.2f}（{r['pct']:+.2f}%）市值 {r['value']:,} 損益 {r['pnl']:+,}（{r['ret']:+.2f}%）{fi}")
+
     L.append("")
     L.append("【觀察清單】")
-    watch = cfg["watchlist"]["etfs"] + cfg["watchlist"]["stocks"]
-    t86w = m.get("t86", {}).get("watch", {})
+    held = {x["code"] for x in cfg.get("holdings", [])}
+    watch = [c for c in watch_codes(cfg) if c not in held]
     for code in watch:
         q = m["quotes"].get(code)
         if not q:

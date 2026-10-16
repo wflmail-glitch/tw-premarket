@@ -1,9 +1,7 @@
 {
-  "render_ok": 91,
-  "render_total": 91,
-  "ai_ok": 48,
-  "ai_total": 49,
-  "problems": [
-    "[今日重點] 117.54（新聞裡有，但今日重點只能用證交所數字）"
-  ]
+  "render_ok": 96,
+  "render_total": 96,
+  "ai_ok": 46,
+  "ai_total": 46,
+  "problems": []
 }

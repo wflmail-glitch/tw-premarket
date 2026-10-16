@@ -103,3 +103,10 @@ def roc_date(d):
 def write_json(path, obj):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(obj, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def watch_codes(cfg):
+    """持股優先，再加額外觀察清單（去重、保序）。"""
+    codes = [h["code"] for h in cfg.get("holdings", [])]
+    codes += cfg["watchlist"].get("etfs", []) + cfg["watchlist"].get("stocks", [])
+    return list(dict.fromkeys(codes))

@@ -11,7 +11,7 @@ import json
 import re
 import sys
 
-from common import ROOT, http_get, load_config, num, roc_date, sign_of, today_tpe, write_json
+from common import ROOT, http_get, load_config, num, roc_date, sign_of, today_tpe, watch_codes, write_json
 
 BASE = "https://www.twse.com.tw/rwd/zh"
 
@@ -86,7 +86,7 @@ def parse_all(j, cfg):
             out["flat"] = a
 
     quotes = find_table(tbs, "每日收盤行情")
-    watch = cfg["watchlist"]["etfs"] + cfg["watchlist"]["stocks"]
+    watch = watch_codes(cfg)
     q = {}
     for r in quotes["data"]:
         if r[0] in watch:
@@ -128,7 +128,7 @@ def parse_t86(j, cfg):
                      "dealer": round(num(r[11]) / 1000)})
     n = cfg["market"]["foreign_top_n"]
     by_f = sorted(rows, key=lambda x: x["foreign"], reverse=True)
-    watch = set(cfg["watchlist"]["etfs"] + cfg["watchlist"]["stocks"])
+    watch = set(watch_codes(cfg))
     return {
         "foreign_buy_top": by_f[:n],
         "foreign_sell_top": list(reversed(by_f[-n:])),
@@ -137,7 +137,7 @@ def parse_t86(j, cfg):
 
 
 def parse_exdiv(j, today, cfg):
-    watch = set(cfg["watchlist"]["etfs"] + cfg["watchlist"]["stocks"])
+    watch = set(watch_codes(cfg))
     soon, today_cnt = [], 0
     for r in j.get("data", []):
         m = re.match(r"(\d+)年(\d+)月(\d+)日", r[0])
@@ -146,7 +146,7 @@ def parse_exdiv(j, today, cfg):
         d = dt.date(int(m.group(1)) + 1911, int(m.group(2)), int(m.group(3)))
         if d == today:
             today_cnt += 1
-        if r[1] in watch and today <= d <= today + dt.timedelta(days=10):
+        if r[1] in watch and today <= d <= today + dt.timedelta(days=20):
             cash = num(r[7])
             soon.append({"date": d.isoformat(), "code": r[1], "name": r[2], "type": r[3], "cash": cash})
     return {"today_count": today_cnt, "watch_upcoming": sorted(soon, key=lambda x: x["date"])}

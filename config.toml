@@ -2,11 +2,67 @@
 # 要換觀察清單，改這裡就好（不用動程式）
 
 [watchlist]
-# ETF 觀察清單
-etfs = ["00403A", "0056", "00919", "009816", "00983A", "0050"]
-# 個股觀察清單（持股；2330 為大盤參考）
-# 笙泉為上櫃股，目前只抓上市資料，未納入
-stocks = ["1504", "2002", "3576", "6152", "2330"]
+# 額外觀察（非持股）：大盤參考
+etfs = ["0050"]
+stocks = []
+
+# 我的持股（來源：券商庫存截圖 2026-10-16；美德醫療-DR 已於 10/16 賣出）
+# 股數、成本均價改這裡；type: etf（交易稅 0.1%）、stock（0.3%）、dr（存託憑證 0.1%）
+[[holdings]]
+code = "00406A"
+name = "主動中信台灣收益"
+shares = 40000
+cost = 9.4835   # 成本待確認：截圖為 20,000 股時的均價，加碼後均價請更新
+type = "etf"
+
+[[holdings]]
+code = "0056"
+name = "元大高股息"
+shares = 15000
+cost = 37.9239
+type = "etf"
+
+[[holdings]]
+code = "00919"
+name = "群益台灣精選高息"
+shares = 10000
+cost = 23.3332
+type = "etf"
+
+[[holdings]]
+code = "009816"
+name = "凱基台灣TOP50"
+shares = 20000
+cost = 13.6744
+type = "etf"
+
+[[holdings]]
+code = "1504"
+name = "東元"
+shares = 6000
+cost = 76.9258
+type = "stock"
+
+[[holdings]]
+code = "2002"
+name = "中鋼"
+shares = 10000
+cost = 19.9784
+type = "stock"
+
+[[holdings]]
+code = "2330"
+name = "台積電"
+shares = 500
+cost = 2364.36
+type = "stock"
+
+
+[fees]
+broker_fee = 0.001425   # 賣出手續費（未計折扣，與券商預估損益一致）
+tax_etf = 0.001
+tax_stock = 0.003
+tax_dr = 0.001        # 存託憑證（TDR）
 
 [market]
 foreign_top_n = 10        # 外資買超／賣超前 N 名
